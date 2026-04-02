@@ -16,12 +16,13 @@
             <button class="tablinks" onclick="openTab(event, 'blackhat')">Black Hat</button>
         </div>
 
-        <!-- white Hat tab content -->
+        <!-- white hat tab content -->
         <div id="whitehat" class="tabcontent" style="display:block">
-            <div id="vis"></div>
+            <div id="vis"></div> <!-- heatmap -->
+            <div id="vis2" style="display:none"></div> <!-- line chart -->
         </div>
 
-        <!-- black Hat tab content -->
+        <!-- black hat tab content -->
         <div id="blackhat" class="tabcontent">
             <!-- put your black hat stuff here -->
         </div>
@@ -30,7 +31,7 @@
 
     <div id="tooltip" style="display:none"></div>
 
-    <!-- Load D3.js -->
+    <!-- load d3.js -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="js/script.js"></script>
 </body>
