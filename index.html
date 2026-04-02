@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cmsc471 a2</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>CMSC471 A2</h1>
+
+        <!-- tab buttons -->
+        <div class="tab">
+            <button class="tablinks active" onclick="openTab(event, 'whitehat')">White Hat</button>
+            <button class="tablinks" onclick="openTab(event, 'blackhat')">Black Hat</button>
+        </div>
+
+        <!-- white Hat tab content -->
+        <div id="whitehat" class="tabcontent" style="display:block">
+            <div id="vis"></div>
+        </div>
+
+        <!-- black Hat tab content -->
+        <div id="blackhat" class="tabcontent">
+            <!-- put your black hat stuff here -->
+        </div>
+
+    </div>
+
+    <div id="tooltip" style="display:none"></div>
+
+    <!-- Load D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
