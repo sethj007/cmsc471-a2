@@ -43,9 +43,59 @@ const lineSvg = d3.select('#vis2')
     .append('g')
     .attr('transform', `translate(${marginLine.left},${marginLine.top})`);
 
+// heatmap legend
+function drawLegend(color) {
+    const legendWidth = 200;
+    const legendHeight = 10;
+    const legendX = width - legendWidth;
+    const legendY = -55;
+
+    const defs = svg.append('defs');
+    const linearGradient = defs.append('linearGradient')
+        .attr('id', 'legend-gradient');
+
+    linearGradient.selectAll('stop')
+        .data([
+            { offset: '0%',   color: color(50)  },
+            { offset: '50%',  color: color(0)   },
+            { offset: '100%', color: color(-55) }
+        ])
+        .enter().append('stop')
+        .attr('offset', d => d.offset)
+        .attr('stop-color', d => d.color);
+
+    svg.append('rect')
+        .attr('x', legendX)
+        .attr('y', legendY)
+        .attr('width', legendWidth)
+        .attr('height', legendHeight)
+        .style('fill', 'url(#legend-gradient)');
+
+    const legendScale = d3.scaleLinear()
+        .domain([50, -55])
+        .range([0, legendWidth]);
+
+    svg.append('g')
+        .attr('transform', `translate(${legendX}, ${legendY + legendHeight})`)
+        .call(d3.axisBottom(legendScale)
+            .tickValues([50, 0, -55])
+            .tickFormat(d => `${d > 0 ? '+' : ''}${d}%`)
+            .tickSize(3))
+        .select('.domain').remove();
+
+    svg.append('text')
+        .attr('x', legendX + legendWidth / 2)
+        .attr('y', legendY - 6)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '10px')
+        .style('fill', '#555')
+        .text('% change from 2000');
+}
+
 // load csv and transform data
-function init(){
+function init() {
     d3.csv('data/oecd_env_data.csv').then(raw => {
+        console.log(raw); // debug
 
         // filter to european countries only
         const filtered = raw.filter(d => europeanCountries.includes(d['Reference area']));
@@ -61,56 +111,73 @@ function init(){
         });
 
         // compute % change from 2000 baseline
-        const data = [];
+        const heatData = [];
         europeanCountries.forEach(country => {
             const baseline = lookup[country]?.[2000];
             if (!baseline) return;
             years.forEach(year => {
                 const raw = lookup[country]?.[year];
                 const pct = raw != null ? ((raw - baseline) / baseline) * 100 : null;
-                data.push({ country, year, raw, pct });
+                heatData.push({ country, year, raw, pct });
             });
         });
 
-        // sort countries by 2023 % change
+        // sort countries by 2023 % change (biggest decrease at top)
         const pct2023 = {};
         europeanCountries.forEach(country => {
-            const entry = data.find(d => d.country === country && d.year === 2023);
+            const entry = heatData.find(d => d.country === country && d.year === 2023);
             pct2023[country] = entry?.pct ?? Infinity;
         });
         const sortedCountries = [...europeanCountries].sort((a, b) => pct2023[a] - pct2023[b]);
 
-        drawHeatmap(data, sortedCountries);
-    });
-}
+        // x scale (years)
+        const x = d3.scaleBand()
+            .domain(years)
+            .range([0, width])
+            .padding(0.05);
 
-function drawHeatmap(data, sortedCountries) {
-    // x scale (years)
-    const x = d3.scaleBand()
-        .domain(years)
-        .range([0, width])
-        .padding(0.05);
+        // y scale (countries)
+        const y = d3.scaleBand()
+            .domain(sortedCountries)
+            .range([0, height])
+            .padding(0.05);
 
-    // y scale (countries)
-    const y = d3.scaleBand()
-        .domain(sortedCountries)
-        .range([0, height])
-        .padding(0.05);
+        // diverging color scale: green = decreased, red = increased
+        const color = d3.scaleDiverging()
+            .domain([50, 0, -55])
+            .interpolator(d3.interpolateRdYlGn);
 
-    // x axis (showing every 5 years)
-    svg.append('g')
-        .attr('class', 'x-axis')
-        .attr('transform', `translate(0, ${height})`)
-        .call(d3.axisBottom(x)
-            .tickValues(years.filter(y => y % 5 === 0))
-            .tickSize(0))
-        .select('.domain').remove();
+        // x axis (showing every 5 years)
+        svg.append('g')
+            .attr('class', 'x-axis')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(x)
+                .tickValues(years.filter(y => y % 5 === 0))
+                .tickSize(0))
+            .select('.domain').remove();
 
-    // y axis
-    svg.append('g')
-        .attr('class', 'y-axis')
-        .call(d3.axisLeft(y).tickSize(0))
-        .select('.domain').remove();
+        // y axis
+        svg.append('g')
+            .attr('class', 'y-axis')
+            .call(d3.axisLeft(y).tickSize(0))
+            .select('.domain').remove();
+
+        // draw heatmap cells
+        svg.selectAll('.cell')
+            .data(heatData.filter(d => d.pct !== null))
+            .enter()
+            .append('rect')
+            .attr('class', 'cell')
+            .attr('x', d => x(d.year))
+            .attr('y', d => y(d.country))
+            .attr('width', x.bandwidth())
+            .attr('height', y.bandwidth())
+            .attr('fill', d => color(d.pct))
+            .attr('rx', 2);
+
+        drawLegend(color);
+
+    }).catch(error => console.error('Error loading data:', error));
 }
 
 window.addEventListener('load', init);
