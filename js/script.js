@@ -206,7 +206,27 @@ function init() {
             .attr('width', x.bandwidth())
             .attr('height', y.bandwidth())
             .attr('fill', d => color(d.pct))
-            .attr('rx', 2);
+            .attr('rx', 2)
+            .on('mouseover', function(event, d) {
+                d3.select('#tooltip')
+                    .style('display', 'block')
+                    .style('opacity', 0)
+                    .html(`
+                        <strong>${d.country}</strong> — ${d.year}<br/>
+                        Emissions: ${d.raw.toFixed(2)} kg CO₂e/person<br/>
+                        Change from 2000: ${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%
+                    `)
+                    .style('left', (event.pageX + 12) + 'px')
+                    .style('top', (event.pageY - 28) + 'px')
+                    .transition().duration(20)
+                    .style('opacity', 1);
+            })
+            .on('mouseout', function() {
+                d3.select('#tooltip')
+                    .transition().duration(20)
+                    .style('opacity', 0)
+                    .on('end', function() { d3.select(this).style('display', 'none'); });
+            });
 
         drawLegend(color);
         drawTitles();
