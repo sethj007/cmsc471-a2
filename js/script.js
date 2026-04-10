@@ -1,5 +1,5 @@
 // set up dimens. and margins
-const margin = { top: 80, right: 60, bottom: 60, left: 100 };
+const margin = { top: 80, right: 60, bottom: 80, left: 100 };
 const width = 800 - margin.left - margin.right;
 const height = 600 - margin.top - margin.bottom;
 const marginLine = { top: 40, right: 60, bottom: 60, left: 100 };
@@ -48,7 +48,7 @@ function drawLegend(color) {
     const legendWidth = 200;
     const legendHeight = 10;
     const legendX = width - legendWidth;
-    const legendY = -55;
+    const legendY = height + 30;
 
     const defs = svg.append('defs');
     const linearGradient = defs.append('linearGradient')
@@ -90,6 +90,39 @@ function drawLegend(color) {
         .style('font-size', '10px')
         .style('fill', '#555')
         .text('% change from 2000');
+}
+
+// draw graph labels
+function drawTitles() {
+    // main title
+    svg.append('text')
+        .attr('class', 'chart-title')
+        .attr('x', width / 2)
+        .attr('y', -50)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '16px')
+        .style('font-weight', 'bold')
+        .text('European Greenhouse Gas Emissions Per Capita');
+
+    // subtitle
+    svg.append('text')
+        .attr('class', 'chart-subtitle')
+        .attr('x', width / 2)
+        .attr('y', -30)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '11px')
+        .style('fill', '#555')
+        .text('% change from 2000 baseline | Total GHG excluding LULUCF | Click a country row to see trend');
+
+    // data source footnote
+    svg.append('text')
+        .attr('class', 'footnote')
+        .attr('x', 0)
+        .attr('y', height + 65)
+        .attr('text-anchor', 'start')
+        .style('font-size', '10px')
+        .style('fill', '#888')
+        .text('Source: OECD/UNFCCC National Inventory Submissions 2025');
 }
 
 // load csv and transform data
@@ -176,6 +209,7 @@ function init() {
             .attr('rx', 2);
 
         drawLegend(color);
+        drawTitles();
 
     }).catch(error => console.error('Error loading data:', error));
 }
