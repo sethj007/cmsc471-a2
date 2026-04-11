@@ -4,13 +4,13 @@ const width = 900 - margin.left - margin.right;
 const height = 750 - margin.top - margin.bottom;
 
 // line chart svg
-const marginLine = { top: 40, right: 100, bottom: 60, left: 80 };
-const lineWidth = 750 - marginLine.left - marginLine.right;
+const marginLine = { top: 40, right: 80, bottom: 60, left: 80 };
+const lineWidth = 680 - marginLine.left - marginLine.right;
 const lineHeight = 375 - marginLine.top - marginLine.bottom;
 
 // bar chart svg
-const marginBar = { top: 40, right: 100, bottom: 60, left: 80 };
-const barWidth = 750 - marginBar.left - marginBar.right;
+const marginBar = { top: 40, right: 40, bottom: 60, left: 100 };
+const barWidth = 680 - marginBar.left - marginBar.right;
 const barHeight = 375 - marginBar.top - marginBar.bottom;
 
 const years = d3.range(2000, 2024); // 2000-2023

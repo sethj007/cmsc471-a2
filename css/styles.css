@@ -5,11 +5,25 @@
     line-height: 1.8;
 }
 
+/* page background */
+body {
+    background: #f7f7f7;
+}
+
 /* container styling for layout */
 .container {
     max-width: 1100px;
     margin: 2rem auto;
     font-family: Arial, sans-serif;
+    background: #f7f7f7;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #111;
+    padding: 1.5rem 0 0.5rem 0;
 }
 
 #vis svg {
@@ -17,13 +31,20 @@
     border: none;
 }
 
-#vis2 svg {
-    margin: 0;
-    border: none;
-    overflow: visible;
+#vis2 {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    border: 1px solid #e8e8e8;
+    padding: 1rem;
 }
 
 #vis3 {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    border: 1px solid #e8e8e8;
+    padding: 1rem;
     margin-top: 0;
 }
 
@@ -80,8 +101,9 @@ button {
 .tab {
     display: flex;
     justify-content: center;
-    border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid #ddd;
     margin-bottom: 1.5rem;
+    background: #f7f7f7;
 }
 
 /* individual tab buttons */
@@ -95,8 +117,9 @@ button {
     padding: 10px 24px;
     font-size: 15px;
     cursor: pointer;
-    color: #666;
+    color: #888;
     transition: color 0.2s;
+    letter-spacing: 0.3px;
 }
 
 .tablinks:hover {
@@ -105,9 +128,9 @@ button {
 
 /* active tab */
 .tablinks.active {
-    color: #222;
+    color: #111;
     font-weight: bold;
-    border-bottom: 3px solid #222;
+    border-bottom: 3px solid #111;
 }
 
 /* tab content panels */
@@ -131,32 +154,56 @@ button {
 .vis-layout {
     display: flex;
     align-items: flex-start;
-    gap: 0;
+    gap: 1rem;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
+    background: #f7f7f7;
+    padding: 1rem;
+    box-sizing: border-box;
 }
 
 .vis-left {
-    border-right: 1px solid #eee;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    border: 1px solid #e8e8e8;
+    padding: 1rem;
 }
 
 .vis-right {
     flex: 1;
-    padding: 1rem;
+    padding: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 1rem;
+    background: transparent;
+}
+
+#vis2 svg {
+    margin: 0;
+    border: none;
+    overflow: visible;
+    display: block;
+}
+
+#vis3 svg {
+    margin: 0;
+    border: none;
+    display: block;
 }
 
 #writeup {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
-    padding: 1.5rem 2rem;
+    padding: 2rem 3rem;
     margin-top: 0;
-    border-top: 1px solid #eee;
+    border-top: none;
     box-sizing: border-box;
     color: #333;
     font-size: 12px;
+    background: #f7f7f7;
+    box-shadow: none;
 }
 
 #writeup h2 {
