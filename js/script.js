@@ -288,6 +288,30 @@ function drawLineChart(country) {
         .style('font-weight', 'bold')
         .text(`${country} — Emissions Over Time`);
 
+    // reset button (SVG)
+    const resetBtn = lineSvg.append('g')
+        .attr('class', 'reset-btn')
+        .attr('transform', `translate(${lineWidth + marginLine.right - 10}, ${lineHeight + 40})`)
+        .style('cursor', 'pointer')
+        .on('click', resetSelection);
+
+    resetBtn.append('rect')
+        .attr('x', -90)
+        .attr('y', -14)
+        .attr('width', 100)
+        .attr('height', 20)
+        .attr('rx', 4)
+        .attr('fill', 'none')
+        .attr('stroke', '#ccc');
+
+    resetBtn.append('text')
+        .attr('x', -40)
+        .attr('y', 0)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '11px')
+        .style('fill', '#666')
+        .text('✕ Clear Selection');
+
     // y axis label
     lineSvg.append('text')
         .attr('class', 'axis-label')
@@ -301,15 +325,48 @@ function drawLineChart(country) {
 
 function resetSelection() {
     svg.selectAll('.cell').style('opacity', 1);
-    d3.select('#reset-btn').style('display', 'none');
     lineSvg.selectAll('*').remove();
+
+    // x scale
+    const xLine = d3.scaleLinear()
+        .domain([2000, 2023])
+        .range([0, lineWidth]);
+
+    // y scale (empty, just show axis)
+    const yLine = d3.scaleLinear()
+        .domain([0, 20])
+        .range([lineHeight, 0]);
+
+    // x axis
+    lineSvg.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', `translate(0, ${lineHeight})`)
+        .call(d3.axisBottom(xLine).tickFormat(d3.format('d')).ticks(6));
+
+    // y axis
+    lineSvg.append('g')
+        .attr('class', 'y-axis')
+        .call(d3.axisLeft(yLine).ticks(5));
+
+    // y axis label
     lineSvg.append('text')
+        .attr('class', 'axis-label')
+        .attr('transform', 'rotate(-90)')
+        .attr('x', -lineHeight / 2)
+        .attr('y', -50)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '11px')
+        .text('kg CO₂e per person');
+
+    // placeholder text
+    lineSvg.append('text')
+        .attr('class', 'placeholder-text')
         .attr('x', lineWidth / 2)
         .attr('y', lineHeight / 2)
         .attr('text-anchor', 'middle')
         .style('fill', '#aaa')
         .style('font-size', '13px')
-        .text('Click a country to see its emissions trend');
+        .text("Click a country to see its emissions trend");
 }
 
 // load csv and transform data
@@ -445,7 +502,6 @@ function init() {
                 svg.selectAll('.cell')
                 .style('opacity', c => c.country === d.country ? 1 : 0.4);
 
-                d3.select('#reset-btn').style('display', 'inline-block');
                 drawLineChart(d.country);
             });
 
