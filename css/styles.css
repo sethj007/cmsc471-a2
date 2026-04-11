@@ -141,11 +141,35 @@ button {
 }
 
 #writeup {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    padding: 1.5rem 2rem;
+    margin-top: 0;
+    border-top: 1px solid #eee;
+    box-sizing: border-box;
+    color: #333;
+    font-size: 12px;
+}
+
+#writeup h2 {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
     margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    min-height: 200px;
-    color: #aaa;
+    color: #222;
+}
+
+#writeup h3 {
     font-size: 13px;
+    font-weight: bold;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    color: #444;
+}
+
+#writeup p {
+    font-size: 12px;
+    color: #333;
+    line-height: 1.7;
+    margin-bottom: 0.5rem;
 }
