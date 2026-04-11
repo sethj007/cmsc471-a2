@@ -197,21 +197,21 @@ h1 {
 }
 
 #writeup h2 {
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
     margin-bottom: 0.5rem;
     margin-top: 1rem;
 }
 
 #writeup h3 {
-    font-size: 18px;
+    font-size: 24px;
     font-weight: bold;
     margin-top: 1rem;
     margin-bottom: 0.25rem;
 }
 
 #writeup p {
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1.8;
     margin-bottom: 0.75rem;
 }
