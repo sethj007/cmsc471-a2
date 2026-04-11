@@ -1,19 +1,17 @@
-
-
 // line chart svg
-const marginLine = { top: 40, right: 80, bottom: 60, left: 80 };
+const marginLine = { top: 40, right: 100, bottom: 40, left: 80 };
 const lineWidth = 680 - marginLine.left - marginLine.right;
 const lineHeight = 375 - marginLine.top - marginLine.bottom;
 
 // bar chart svg
-const marginBar = { top: 60, right: 40, bottom: 40, left: 80 };
+const marginBar = { top: 40, right: 40, bottom: 40, left: 80 };
 const barWidth = 680 - marginBar.left - marginBar.right;
 const barHeight = 375 - marginBar.top - marginBar.bottom;
 
 // set up dimens. and margins
 const margin = { top: 80, right: 40, bottom: 80, left: 120 };
 const width = 900 - margin.left - margin.right;
-const height = lineHeight + barHeight + 162;
+const height = lineHeight + barHeight + 122; // trial and error to get this number. 
 
 const years = d3.range(2000, 2024); // 2000-2023
 
@@ -151,9 +149,6 @@ function drawLineChart(country) {
     // clear any previous line chart content
     lineSvg.selectAll('*').remove();
 
-    // show the panel
-    d3.select('#vis2').style('display', 'block');
-
     // get all raw values for selected country and OECD Europe
     const countryData = years
         .map(year => ({ year, value: lookup[country]?.[year] }))
@@ -210,14 +205,23 @@ function drawLineChart(country) {
         .style('fill', '#aaa')
         .text('OECD Europe avg.');
 
-    // country line
-    lineSvg.append('path')
+    // country line with draw animation
+    const path = lineSvg.append('path')
         .datum(countryData)
         .attr('class', 'country-line')
         .attr('fill', 'none')
         .attr('stroke', '#2a7a2a')
         .attr('stroke-width', 2.5)
         .attr('d', line);
+
+    const totalLength = path.node().getTotalLength();
+    path
+        .attr('stroke-dasharray', totalLength)
+        .attr('stroke-dashoffset', totalLength)
+        .transition()
+        .duration(600)
+        .ease(d3.easeLinear)
+        .attr('stroke-dashoffset', 0);
 
     // COVID annotation
     lineSvg.append('line')
@@ -411,18 +415,23 @@ function drawBarChart(country) {
         .attr('stroke', '#ccc')
         .attr('stroke-width', 1);
 
-    // bars
+    // bars with grow animation
     barSvg.selectAll('.bar')
         .data(barData)
         .enter()
         .append('rect')
         .attr('class', 'bar')
         .attr('x', d => xBar(d.label))
-        .attr('y', d => d.pct < 0 ? yBar(0) : yBar(d.pct))
+        .attr('y', yBar(0))
         .attr('width', xBar.bandwidth())
-        .attr('height', d => Math.abs(yBar(d.pct) - yBar(0)))
+        .attr('height', 0)
         .attr('fill', d => d.color)
-        .attr('rx', 3);
+        .attr('rx', 3)
+        .transition()
+        .duration(500)
+        .ease(d3.easeCubicOut)
+        .attr('y', d => d.pct < 0 ? yBar(0) : yBar(d.pct))
+        .attr('height', d => Math.abs(yBar(d.pct) - yBar(0)));
 
     // value labels on bars
     barSvg.selectAll('.bar-label')
@@ -431,10 +440,19 @@ function drawBarChart(country) {
         .append('text')
         .attr('class', 'bar-label')
         .attr('x', d => xBar(d.label) + xBar.bandwidth() / 2)
-        .attr('y', d => d.pct < 0 ? yBar(d.pct) + 14 : yBar(d.pct) - 10)
+        .attr('y', d => {
+            if (d.pct < 0) return yBar(d.pct) + 14;
+            const labelY = yBar(d.pct) - 10;
+            return Math.max(labelY, 15);
+        })
         .attr('text-anchor', 'middle')
         .style('font-size', '11px')
         .style('fill', '#333')
+        .style('opacity', 0)
+        .transition()
+        .delay(500)
+        .duration(200)
+        .style('opacity', 1)
         .text(d => `${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%`);
 
     // title
@@ -467,7 +485,10 @@ function drawBarChart(country) {
 }
 
 function resetSelection() {
-    svg.selectAll('.cell').style('opacity', 1);
+    svg.selectAll('.cell')
+        .transition().duration(300)
+        .style('opacity', 1);
+
     lineSvg.selectAll('*').remove();
 
     // x scale
@@ -632,12 +653,12 @@ function init() {
             .style('cursor', 'pointer')
             .on('click', function (event, d) {
                 svg.selectAll('.cell')
+                    .transition().duration(300)
                     .style('opacity', c => c.country === d ? 1 : 0.4);
 
                 drawLineChart(d);
             });
 
-        // draw heatmap cells
         // draw heatmap cells
         svg.selectAll('.cell')
             .data(heatData.filter(d => d.pct !== null))
@@ -683,8 +704,9 @@ function init() {
                     .on('end', function () { d3.select(this).style('display', 'none'); });
             })
             .on('click', function (event, d) {
-                // highlight selected row
+                // highlight selected row with transition
                 svg.selectAll('.cell')
+                    .transition().duration(300)
                     .style('opacity', c => c.country === d.country ? 1 : 0.4);
 
                 drawLineChart(d.country);
