@@ -202,6 +202,58 @@ function drawLineChart(country) {
         .attr('stroke-width', 2.5)
         .attr('d', line);
 
+    // hover dot and vertical line
+    const focus = lineSvg.append('g')
+        .attr('class', 'focus')
+        .style('display', 'none');
+
+    focus.append('line')
+        .attr('class', 'focus-line')
+        .attr('y1', 0)
+        .attr('y2', lineHeight)
+        .attr('stroke', '#ccc')
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '3,3');
+
+    focus.append('circle')
+        .attr('class', 'focus-circle')
+        .attr('r', 5)
+        .attr('fill', '#2a7a2a')
+        .attr('stroke', 'white')
+        .attr('stroke-width', 2);
+
+    // invisible overlay to capture mouse movement
+    lineSvg.append('rect')
+        .attr('class', 'overlay')
+        .attr('width', lineWidth)
+        .attr('height', lineHeight)
+        .attr('fill', 'none')
+        .attr('pointer-events', 'all')
+        .on('mouseover', () => focus.style('display', null))
+        .on('mouseout', () => focus.style('display', 'none'))
+        .on('mousemove', function(event) {
+            const [mx] = d3.pointer(event);
+            const year = Math.round(xLine.invert(mx));
+            const d = countryData.find(d => d.year === year);
+            if (!d) return;
+
+            focus.select('.focus-line')
+                .attr('transform', `translate(${xLine(d.year)}, 0)`);
+
+            focus.select('.focus-circle')
+                .attr('transform', `translate(${xLine(d.year)}, ${yLine(d.value)})`);
+
+            d3.select('#tooltip')
+                .style('display', 'block')
+                .style('opacity', 1)
+                .html(`
+                    <strong>${country}</strong> — ${d.year}<br/>
+                    ${d.value.toFixed(2)} kg CO₂e/person
+                `)
+                .style('left', (event.pageX + 12) + 'px')
+                .style('top', (event.pageY - 28) + 'px');
+        });
+
     // dynamic title
     lineSvg.append('text')
         .attr('class', 'line-title')
