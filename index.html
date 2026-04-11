@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>cmsc471 a2</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-
 <body>
     <div class="container">
-
-        <h1>Same Data, Different Story: European Greenhouse Gas Emissions</h1>
+        <h1>CMSC471 A2</h1>
 
         <!-- tab buttons -->
         <div class="tab">
@@ -111,10 +108,18 @@
     </div>
     </div>
 
-    <!-- black hat tab content -->
-    <div id="blackhat" class="tabcontent">
-        <!-- put your black hat stuff here -->
-    </div>
+        <!-- black hat tab content -->
+        <div id="blackhat" class="tabcontent">
+            <img src="images/BlackHat Visualization.png" alt="Black Hat Visualization">
+
+            <p>The foundational deception in this visualization is the deliberate substitution of a "stock" metric (cumulative emissions) for a "flow" metric (annual emissions). 
+                By plotting the running total of CO2 added to the atmosphere, this ensures that every single trend line will perpetually move up and to the right, regardless of a country's current environmental efforts. 
+                Even if a country reaches net-zero emissions, their line on this chart would merely flatten out horizontally at a high peak, falsely making them look like a massive polluter compared to a country that has historically emitted less but is currently polluting at a rapid rate. 
+            </p>
+            <p>
+                This effect is evident when looking at Luxembourg's emissions compared to Georgia, 
+            </p>
+        </div>
 
     </div>
 
@@ -124,5 +129,4 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="js/script.js"></script>
 </body>
-
 </html>
