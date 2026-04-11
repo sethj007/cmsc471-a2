@@ -22,6 +22,11 @@
     border: none;
 }
 
+#vis3 svg {
+    margin: 0;
+    border: none;
+}
+
 .y-axis .tick line {
     stroke: #ccc;
 }
