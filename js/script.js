@@ -3,9 +3,15 @@ const margin = { top: 80, right: 40, bottom: 80, left: 120 };
 const width = 900 - margin.left - margin.right;
 const height = 750 - margin.top - margin.bottom;
 
+// line chart svg
 const marginLine = { top: 40, right: 100, bottom: 60, left: 80 };
 const lineWidth = 750 - marginLine.left - marginLine.right;
-const lineHeight = 320 - marginLine.top - marginLine.bottom;
+const lineHeight = 375 - marginLine.top - marginLine.bottom;
+
+// bar chart svg
+const marginBar = { top: 40, right: 100, bottom: 60, left: 80 };
+const barWidth = 750 - marginBar.left - marginBar.right;
+const barHeight = 375 - marginBar.top - marginBar.bottom;
 
 const years = d3.range(2000, 2024); // 2000-2023
 
@@ -49,6 +55,13 @@ const lineSvg = d3.select('#vis2')
     .append('g')
     .attr('transform', `translate(${marginLine.left},${marginLine.top})`);
 
+const barSvg = d3.select('#vis3')
+    .append('svg')
+    .attr('width', barWidth + marginBar.left + marginBar.right)
+    .attr('height', barHeight + marginBar.top + marginBar.bottom)
+    .append('g')
+    .attr('transform', `translate(${marginBar.left},${marginBar.top})`);
+
 // heatmap legend
 function drawLegend(color) {
     const legendWidth = 200;
@@ -62,8 +75,8 @@ function drawLegend(color) {
 
     linearGradient.selectAll('stop')
         .data([
-            { offset: '0%',   color: color(50)  },
-            { offset: '50%',  color: color(0)   },
+            { offset: '0%', color: color(50) },
+            { offset: '50%', color: color(0) },
             { offset: '100%', color: color(-55) }
         ])
         .enter().append('stop')
@@ -249,13 +262,13 @@ function drawLineChart(country) {
         .attr('fill', 'none')
         .attr('pointer-events', 'all')
         .on('mouseover', () => focus.style('display', null))
-        .on('mouseout', function() {
+        .on('mouseout', function () {
             focus.style('display', 'none');
             d3.select('#tooltip')
                 .style('opacity', 0)
-                .on('end', function() { d3.select(this).style('display', 'none'); }); 
+                .on('end', function () { d3.select(this).style('display', 'none'); });
         })
-        .on('mousemove', function(event) {
+        .on('mousemove', function (event) {
             const [mx] = d3.pointer(event);
             const year = Math.round(xLine.invert(mx));
             const d = countryData.find(d => d.year === year);
@@ -321,6 +334,114 @@ function drawLineChart(country) {
         .attr('text-anchor', 'middle')
         .style('font-size', '11px')
         .text('kg CO₂e per person');
+
+    drawBarChart(country);
+}
+
+// draw decade comparison bar chart
+function drawBarChart(country) {
+    barSvg.selectAll('*').remove();
+
+    const baseline = lookup[country]?.[2000];
+    if (!baseline) return;
+
+    // compute average % change for each period
+    const periods = [
+        { label: '2000–2010', years: d3.range(2000, 2011), color: '#d4724a' },
+        { label: '2010–2020', years: d3.range(2010, 2021), color: '#c8b84a' },
+        { label: '2021–2023', years: d3.range(2021, 2024), color: '#4a9a5a' }
+    ];
+
+    const barData = periods.map(p => {
+        const values = p.years
+            .map(y => lookup[country]?.[y])
+            .filter(v => v != null);
+        const avg = d3.mean(values);
+        const pct = ((avg - baseline) / baseline) * 100;
+        return { label: p.label, pct, color: p.color };
+    });
+
+    // x scale
+    const xBar = d3.scaleBand()
+        .domain(barData.map(d => d.label))
+        .range([0, barWidth])
+        .padding(0.3);
+
+    // y scale
+    const yMin = Math.min(0, d3.min(barData, d => d.pct) * 1.2);
+    const yMax = Math.max(0, d3.max(barData, d => d.pct) * 1.2);
+    const yBar = d3.scaleLinear()
+        .domain([yMin, yMax])
+        .range([barHeight, 0]);
+
+    // x axis — always at bottom
+    barSvg.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', `translate(0, ${barHeight})`)
+        .call(d3.axisBottom(xBar))
+        .selectAll('text')
+        .attr('dy', '1.5em');
+
+    // y axis
+    barSvg.append('g')
+        .attr('class', 'y-axis')
+        .call(d3.axisLeft(yBar)
+            .ticks(5)
+            .tickFormat(d => `${d > 0 ? '+' : ''}${d.toFixed(0)}%`));
+
+    // zero line
+    barSvg.append('line')
+        .attr('x1', 0)
+        .attr('x2', barWidth)
+        .attr('y1', yBar(0))
+        .attr('y2', yBar(0))
+        .attr('stroke', '#ccc')
+        .attr('stroke-width', 1);
+
+    // bars
+    barSvg.selectAll('.bar')
+        .data(barData)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar')
+        .attr('x', d => xBar(d.label))
+        .attr('y', d => d.pct < 0 ? yBar(0) : yBar(d.pct))
+        .attr('width', xBar.bandwidth())
+        .attr('height', d => Math.abs(yBar(d.pct) - yBar(0)))
+        .attr('fill', d => d.color)
+        .attr('rx', 3);
+
+    // value labels on bars
+    barSvg.selectAll('.bar-label')
+        .data(barData)
+        .enter()
+        .append('text')
+        .attr('class', 'bar-label')
+        .attr('x', d => xBar(d.label) + xBar.bandwidth() / 2)
+        .attr('y', d => d.pct < 0 ? yBar(d.pct) + 14 : yBar(d.pct) - 6)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '11px')
+        .style('fill', '#333')
+        .text(d => `${d.pct > 0 ? '+' : ''}${d.pct.toFixed(1)}%`);
+
+    // title
+    barSvg.append('text')
+        .attr('x', barWidth / 2)
+        .attr('y', -20)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '13px')
+        .style('font-weight', 'bold')
+        .text(`${country} — Avg. Emissions Change by Decade`);
+
+    // y axis label
+    barSvg.append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('x', -barHeight / 2)
+        .attr('y', -60)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '11px')
+        .style('font-weight', 'bold')
+        .text('Avg. % change from 2000');
 }
 
 function resetSelection() {
@@ -366,7 +487,49 @@ function resetSelection() {
         .attr('text-anchor', 'middle')
         .style('fill', '#aaa')
         .style('font-size', '13px')
-        .text("Click a country to see its emissions trend");
+        .text('Click a country to see its emissions trend');
+
+    // empty bar chart axes
+    barSvg.selectAll('*').remove();
+
+    const xBarEmpty = d3.scaleBand()
+        .domain(['2000–2010', '2010–2020', '2021–2023'])
+        .range([0, barWidth])
+        .padding(0.3);
+
+    const yBarEmpty = d3.scaleLinear()
+        .domain([-30, 10])
+        .range([barHeight, 0]);
+
+    barSvg.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', `translate(0, ${barHeight})`)
+        .call(d3.axisBottom(xBarEmpty))
+        .selectAll('text')
+        .attr('dy', '1.5em');
+
+    barSvg.append('g')
+        .attr('class', 'y-axis')
+        .call(d3.axisLeft(yBarEmpty)
+            .ticks(5)
+            .tickFormat(d => `${d > 0 ? '+' : ''}${d.toFixed(0)}%`));
+
+    barSvg.append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('x', -barHeight / 2)
+        .attr('y', -60)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '11px')
+        .style('font-weight', 'bold')
+        .text('Avg. % change from 2000');
+
+    barSvg.append('text')
+        .attr('x', barWidth / 2)
+        .attr('y', barHeight / 2)
+        .attr('text-anchor', 'middle')
+        .style('fill', '#aaa')
+        .style('font-size', '13px')
+        .text('Click a country to see decade comparison');
 }
 
 // load csv and transform data
@@ -375,8 +538,8 @@ function init() {
         console.log(raw); // debug
 
         // filter to european countries + OECD Europe reference
-        const filtered = raw.filter(d => 
-            europeanCountries.includes(d['Reference area']) || 
+        const filtered = raw.filter(d =>
+            europeanCountries.includes(d['Reference area']) ||
             d['Reference area'] === 'OECD Europe'
         );
 
@@ -445,7 +608,7 @@ function init() {
         // make y-axis labels clickable
         svg.selectAll('.y-axis .tick')
             .style('cursor', 'pointer')
-            .on('click', function(event, d) {
+            .on('click', function (event, d) {
                 svg.selectAll('.cell')
                     .style('opacity', c => c.country === d ? 1 : 0.4);
 
@@ -466,7 +629,7 @@ function init() {
             .attr('fill', d => color(d.pct))
             .attr('rx', 2)
             .style('cursor', 'pointer')
-            .on('mouseover', function(event, d) {
+            .on('mouseover', function (event, d) {
                 // highlight hovered row
                 svg.selectAll('.cell')
                     .filter(c => c.country === d.country)
@@ -486,7 +649,7 @@ function init() {
                     .transition().duration(20)
                     .style('opacity', 1);
             })
-            .on('mouseout', function() {
+            .on('mouseout', function () {
                 // remove row highlight
                 svg.selectAll('.cell')
                     .style('stroke', 'none')
@@ -495,12 +658,12 @@ function init() {
                 d3.select('#tooltip')
                     .transition().duration(20)
                     .style('opacity', 0)
-                    .on('end', function() { d3.select(this).style('display', 'none'); });
+                    .on('end', function () { d3.select(this).style('display', 'none'); });
             })
-            .on('click', function(event, d) {
+            .on('click', function (event, d) {
                 // highlight selected row
                 svg.selectAll('.cell')
-                .style('opacity', c => c.country === d.country ? 1 : 0.4);
+                    .style('opacity', c => c.country === d.country ? 1 : 0.4);
 
                 drawLineChart(d.country);
             });

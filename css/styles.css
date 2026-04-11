@@ -22,9 +22,8 @@
     border: none;
 }
 
-#vis3 svg {
-    margin: 0;
-    border: none;
+#vis3 {
+    margin-top: 0;
 }
 
 .y-axis .tick line {
@@ -143,6 +142,9 @@ button {
 .vis-right {
     flex: 1;
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 #writeup {
