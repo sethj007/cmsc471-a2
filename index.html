@@ -110,15 +110,48 @@
 
         <!-- black hat tab content -->
         <div id="blackhat" class="tabcontent">
-            <img src="images/BlackHat Visualization.png" alt="Black Hat Visualization">
+            <div class="vis-layout">
+            <div class="center">
+                <img src="images/BlackHat Visualization.png" alt="Black Hat Visualization">
+                <p class="fig-caption">Fig. 1 — GHG emissions per capita of various European Countries.</p>
+            </div>
+        </div>
+            <div id="writeup">
+                <div id="writeup-inner">
+                    <h2>About This Visualization</h2>
 
-            <p>The foundational deception in this visualization is the deliberate substitution of a "stock" metric (cumulative emissions) for a "flow" metric (annual emissions). 
-                By plotting the running total of CO2 added to the atmosphere, this ensures that every single trend line will perpetually move up and to the right, regardless of a country's current environmental efforts. 
-                Even if a country reaches net-zero emissions, their line on this chart would merely flatten out horizontally at a high peak, falsely making them look like a massive polluter compared to a country that has historically emitted less but is currently polluting at a rapid rate. 
-            </p>
-            <p>
-                This effect is evident when looking at Luxembourg's emissions compared to Georgia, 
-            </p>
+                    <h3>Manipulative Techniques</h3>
+                <p>
+                    The foundational deception in this visualization is the use of cumulative emissions compared to annual emissions. 
+                    By plotting the running total of CO2 added to the atmosphere, it ensures that every single trend line will perpetually 
+                    move up and to the right, regardless of a country's current environmental efforts. 
+                    Even if a country reaches net-zero emissions, their line on this chart would merely flatten out horizontally at a high peak, 
+                    falsely making them look like a massive polluter compared to a country that has historically emitted less but is currently polluting at a rapid rate. 
+                </p>
+                <p>
+                    This effect is evident when looking at this cherrypicked dataset. Luxembourg, Germany and Belgium have made progress 
+                    towards reducing CO2 emissions which can be seen when using the white hat visualization.
+                    On the flip side Latvia, Georgia, and Türkiye have all had increased CO2 emissions in recent years. 
+                    However when looking at this graph, it looks like the three countries are doing better when compared to the top 3 countries. 
+                </p>
+
+                <p>
+                    A second layer of deception lies in the title and axis labels. The y-axis is labeled simply "CO₂ Emissions (kg per capita)," which a reader would naturally interpret as the annual rate of emissions.
+                    The title, "Mounting Climate Burden: CO₂ Added Per Capita," does contain a subtle hint in the phrase "Added Per Capita," but this is easily overlooked, and the emotionally charged word "Mounting" 
+                    primes the reader to accept an alarming upward trend as self-evident rather than as an artifact of the chosen transformation.
+
+                </p>
+
+                <p>
+                    The third deceptive element operates at the level of marks and encodings. The chart uses a rainbow-adjacent color palette that assigns warm, attention-drawing colors
+                    to Luxembourg and Belgium, the two countries whose cumulative lines appear highest. These happen to be wealthy Western European nations with long industrial histories, 
+                    making them appear as the worst offenders. Meanwhile, Latvia, Georgia, and Türkiye are rendered in cooler, recessive blues and greens, visually coding them as the "better" performers. 
+                    This color framing reinforces the misleading narrative suggested by the cumulative transformation, 
+                    nudging the reader toward an implicit moral judgment that is the opposite of what annual emissions data would support.
+                </p>
+                </div>
+            </div>
+        
         </div>
 
     </div>

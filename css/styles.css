@@ -224,3 +224,24 @@ h1 {
     padding: 0.5rem 1rem 0.75rem 1rem;
     text-align: center;
 }
+
+.center {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    border: 3px solid white;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    border: 1px solid #e8e8e8;
+    padding: 1rem;
+}
+
+.center img {
+    max-width: 100%;       
+    height: auto;
+}
+
