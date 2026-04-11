@@ -50,6 +50,25 @@ button {
     margin-right: 10px;
 }
 
+#reset-btn {
+    display: none;
+    padding: 6px 14px;
+    margin-bottom: 0.5rem;
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#reset-btn:hover {
+    background: #f5f5f5;
+    border-color: #999;
+    color: #333;
+}
+
 /* tab styles */
 
 /* tab buttons container */
