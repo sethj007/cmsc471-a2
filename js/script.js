@@ -19,6 +19,10 @@ const europeanCountries = [
     'Uzbekistan'
 ];
 
+let lookup = {};
+let heatData = [];
+let sortedCountries = [];
+
 // html tab code
 function openTab(event, tabName) {
     document.querySelectorAll('.tabcontent').forEach(tab => tab.style.display = 'none');
@@ -125,16 +129,113 @@ function drawTitles() {
         .text('Source: OECD/UNFCCC National Inventory Submissions 2025');
 }
 
+// draw line chart axes and reference line
+function drawLineChart(country) {
+    // clear any previous line chart content
+    lineSvg.selectAll('*').remove();
+
+    // show the panel
+    d3.select('#vis2').style('display', 'block');
+
+    // get all raw values for selected country and OECD Europe
+    const countryData = years
+        .map(year => ({ year, value: lookup[country]?.[year] }))
+        .filter(d => d.value != null);
+
+    const oecdData = years
+        .map(year => ({ year, value: lookup['OECD Europe']?.[year] }))
+        .filter(d => d.value != null);
+
+    // x scale (years)
+    const xLine = d3.scaleLinear()
+        .domain([2000, 2023])
+        .range([0, lineWidth]);
+
+    // y scale (raw emissions value)
+    const allValues = [...countryData, ...oecdData].map(d => d.value);
+    const yLine = d3.scaleLinear()
+        .domain([0, d3.max(allValues) * 1.1])
+        .range([lineHeight, 0]);
+
+    // x axis
+    lineSvg.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', `translate(0, ${lineHeight})`)
+        .call(d3.axisBottom(xLine).tickFormat(d3.format('d')).ticks(6));
+
+    // y axis
+    lineSvg.append('g')
+        .attr('class', 'y-axis')
+        .call(d3.axisLeft(yLine).ticks(5));
+
+    // line generator
+    const line = d3.line()
+        .x(d => xLine(d.year))
+        .y(d => yLine(d.value))
+        .defined(d => d.value != null);
+
+    // OECD Europe reference line
+    lineSvg.append('path')
+        .datum(oecdData)
+        .attr('class', 'oecd-line')
+        .attr('fill', 'none')
+        .attr('stroke', '#aaa')
+        .attr('stroke-width', 1.5)
+        .attr('stroke-dasharray', '4,3')
+        .attr('d', line);
+
+    // OECD Europe label
+    const lastOecd = oecdData[oecdData.length - 1];
+    lineSvg.append('text')
+        .attr('x', xLine(lastOecd.year) + 5)
+        .attr('y', yLine(lastOecd.value))
+        .style('font-size', '10px')
+        .style('fill', '#aaa')
+        .text('OECD Europe avg.');
+
+    // country line
+    lineSvg.append('path')
+        .datum(countryData)
+        .attr('class', 'country-line')
+        .attr('fill', 'none')
+        .attr('stroke', '#2a7a2a')
+        .attr('stroke-width', 2.5)
+        .attr('d', line);
+
+    // dynamic title
+    lineSvg.append('text')
+        .attr('class', 'line-title')
+        .attr('x', lineWidth / 2)
+        .attr('y', -15)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '14px')
+        .style('font-weight', 'bold')
+        .text(`${country} — Emissions Over Time`);
+
+    // y axis label
+    lineSvg.append('text')
+        .attr('class', 'axis-label')
+        .attr('transform', 'rotate(-90)')
+        .attr('x', -lineHeight / 2)
+        .attr('y', -50)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '11px')
+        .text('kg CO₂e per person');
+}
+
 // load csv and transform data
 function init() {
     d3.csv('data/oecd_env_data.csv').then(raw => {
         console.log(raw); // debug
 
-        // filter to european countries only
-        const filtered = raw.filter(d => europeanCountries.includes(d['Reference area']));
+        // filter to european countries + OECD Europe reference
+        const filtered = raw.filter(d => 
+            europeanCountries.includes(d['Reference area']) || 
+            d['Reference area'] === 'OECD Europe'
+        );
 
         // build lookup: { country -> { year -> value } }
-        const lookup = {};
+        lookup = {};
         filtered.forEach(d => {
             const country = d['Reference area'];
             const year = +d['TIME_PERIOD'];
@@ -144,7 +245,7 @@ function init() {
         });
 
         // compute % change from 2000 baseline
-        const heatData = [];
+        heatData = [];
         europeanCountries.forEach(country => {
             const baseline = lookup[country]?.[2000];
             if (!baseline) return;
@@ -161,7 +262,7 @@ function init() {
             const entry = heatData.find(d => d.country === country && d.year === 2023);
             pct2023[country] = entry?.pct ?? Infinity;
         });
-        const sortedCountries = [...europeanCountries].sort((a, b) => pct2023[a] - pct2023[b]);
+        sortedCountries = [...europeanCountries].sort((a, b) => pct2023[a] - pct2023[b]);
 
         // x scale (years)
         const x = d3.scaleBand()
@@ -195,6 +296,16 @@ function init() {
             .call(d3.axisLeft(y).tickSize(0))
             .select('.domain').remove();
 
+        // make y-axis labels clickable
+        svg.selectAll('.y-axis .tick')
+            .style('cursor', 'pointer')
+            .on('click', function(event, d) {
+                svg.selectAll('.cell')
+                    .style('opacity', c => c.country === d ? 1 : 0.4);
+
+                drawLineChart(d);
+            });
+
         // draw heatmap cells
         svg.selectAll('.cell')
             .data(heatData.filter(d => d.pct !== null))
@@ -226,6 +337,13 @@ function init() {
                     .transition().duration(20)
                     .style('opacity', 0)
                     .on('end', function() { d3.select(this).style('display', 'none'); });
+            })
+            .on('click', function(event, d) {
+                // highlight selected row
+                svg.selectAll('.cell')
+                .style('opacity', c => c.country === d.country ? 1 : 0.4);
+
+                drawLineChart(d.country);
             });
 
         drawLegend(color);
