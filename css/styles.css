@@ -10,6 +10,13 @@ body {
     background: #f7f7f7;
 }
 
+.page-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
 /* container */
 .container {
     max-width: 1100px;
@@ -24,6 +31,7 @@ h1 {
     letter-spacing: -0.5px;
     color: #111;
     padding: 1.5rem 0 0.5rem 0;
+    text-align: center;
 }
 
 .page-subtitle {
@@ -31,6 +39,7 @@ h1 {
     color: #666;
     margin-bottom: 1rem;
     line-height: 1.5;
+    text-align: center;
 }
 
 /* axis styles */
@@ -144,21 +153,7 @@ h1 {
     display: block;
 }
 
-#vis2 svg {
-    margin: 0;
-    border: none;
-    overflow: visible;
-    display: block;
-}
-
-#vis3 svg {
-    margin: 0;
-    border: none;
-    display: block;
-}
-
-/* right panel cards */
-#vis2 {
+.chart-card {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 1px 6px rgba(0,0,0,0.08);
@@ -166,16 +161,21 @@ h1 {
     padding: 1rem;
     width: 100%;
     box-sizing: border-box;
+}
+
+#vis2 {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
 }
 
 #vis3 {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-    border: 1px solid #e8e8e8;
-    padding: 1rem;
-    width: 100%;
-    box-sizing: border-box;
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin-top: 0;
 }
 
 /* writeup */
@@ -214,4 +214,13 @@ h1 {
     font-size: 16px;
     line-height: 1.8;
     margin-bottom: 0.75rem;
+}
+
+.fig-caption {
+    font-size: 11px;
+    color: #666;
+    font-style: italic;
+    line-height: 1.5;
+    padding: 0.5rem 1rem 0.75rem 1rem;
+    text-align: center;
 }

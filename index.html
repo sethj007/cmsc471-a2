@@ -10,7 +10,8 @@
 
 <body>
     <div class="container">
-        <h1>CMSC471 A2</h1>
+
+        <h1>Same Data, Different Story: European Greenhouse Gas Emissions</h1>
 
         <!-- tab buttons -->
         <div class="tab">
@@ -23,64 +24,88 @@
             <div class="vis-layout">
                 <div class="vis-left">
                     <div id="vis"></div>
+                    <p class="fig-caption">Fig. 1 — European GHG emissions per capita, % change from 2000 baseline.
+                        Countries sorted by 2023 performance. Click a country row to explore its trend.
+                    </p>
                 </div>
                 <div class="vis-right">
                     <button id="reset-btn" style="display:none" onclick="resetSelection()">✕ Clear Selection</button>
-                    <div id="vis2"></div>
-                    <div id="vis3"></div>
+                    <div class="chart-card" id="vis2-wrap">
+                        <div id="vis2"></div>
+                        <p class="fig-caption">Fig. 2 — Raw emissions over time for the selected country (green) vs.
+                            OECD Europe average (dashed). Vertical line marks the COVID-19 pandemic (2020).</p>
+                    </div>
+                    <div class="chart-card" id="vis3-wrap">
+                        <div id="vis3"></div>
+                        <p class="fig-caption">Fig. 3 — Average % change from 2000 baseline, grouped by decade. Shows
+                            whether the pace of reduction is accelerating over time.</p>
+                    </div>
                 </div>
             </div>
             <div id="writeup">
                 <div id="writeup-inner">
                     <h2>About This Visualization</h2>
 
-                <h3>Dataset</h3>
-                <p>
-                    This visualization draws on greenhouse gas emissions data compiled by the Organisation for Economic
-                    Co-operation and Development (OECD) from National Inventory Submissions to the United Nations
-                    Framework Convention on Climate Change (UNFCCC). The dataset covers total man-made greenhouse gas
-                    emissions — including CO₂, methane, nitrous oxide, and fluorinated gases — expressed in kilograms
-                    of CO₂-equivalent per person per year. Land use, land-use change, and forestry (LULUCF) emissions
-                    are excluded, following standard reporting conventions. The data spans 2000 to 2023 and was filtered
-                    to 41 geographically European countries to focus the narrative on regional trends.
-                </p>
+                    <h3>Dataset</h3>
+                    <p>
+                        This visualization draws on greenhouse gas emissions data compiled by the Organisation for
+                        Economic
+                        Co-operation and Development (OECD) from National Inventory Submissions to the United Nations
+                        Framework Convention on Climate Change (UNFCCC). The dataset covers total man-made greenhouse
+                        gas
+                        emissions — including CO₂, methane, nitrous oxide, and fluorinated gases — expressed in
+                        kilograms
+                        of CO₂-equivalent per person per year. Land use, land-use change, and forestry (LULUCF)
+                        emissions
+                        are excluded, following standard reporting conventions. The data spans 2000 to 2023 and was
+                        filtered
+                        to 41 geographically European countries to focus the narrative on regional trends.
+                    </p>
 
-                <h3>Design Choices</h3>
-                <p>
-                    The primary view is a heatmap with countries on the vertical axis and years on the horizontal axis.
-                    Rather than encoding raw emissions values directly, each cell encodes the <em>percent change from
-                        each country's own 2000 baseline</em>. This transformation was chosen deliberately: it
-                    normalizes
-                    for the fact that countries begin from very different absolute levels, making it possible to fairly
-                    compare progress across the dataset. A country that started at 20 kg/person and dropped to 12 kg
-                    is making meaningful progress — a raw value encoding would obscure this relative improvement.
-                </p>
-                <p>
-                    A diverging red-to-green color scale is used, with white/yellow at 0% change. Green encodes
-                    reduction (good) and red encodes increase (bad), which aligns with widely understood cultural
-                    associations around climate progress. Countries are sorted from top to bottom by their 2023 percent
-                    change, so the biggest improvers appear at the top and the biggest backsliders at the bottom —
-                    making the overall story immediately readable without requiring the viewer to search.
-                </p>
-                <p>
-                    The secondary view is a line chart that appears when a country is clicked, showing that country's
-                    raw emissions trajectory over time alongside a dashed OECD Europe average reference line. This
-                    provides important context: the heatmap communicates relative change, while the line chart
-                    communicates absolute magnitude and situates the country within a regional benchmark. A vertical
-                    annotation marks 2020 to flag the COVID-19 pandemic, which caused a temporary emissions dip across
-                    nearly all countries and could otherwise be misread as sustained progress.
-                </p>
+                    <h3>Design Choices</h3>
+                    <p>
+                        The primary view is a heatmap with countries on the vertical axis and years on the horizontal
+                        axis.
+                        Rather than encoding raw emissions values directly, each cell encodes the <em>percent change
+                            from
+                            each country's own 2000 baseline</em>. This transformation was chosen deliberately: it
+                        normalizes
+                        for the fact that countries begin from very different absolute levels, making it possible to
+                        fairly
+                        compare progress across the dataset. A country that started at 20 kg/person and dropped to 12 kg
+                        is making meaningful progress — a raw value encoding would obscure this relative improvement.
+                    </p>
+                    <p>
+                        A diverging red-to-green color scale is used, with white/yellow at 0% change. Green encodes
+                        reduction (good) and red encodes increase (bad), which aligns with widely understood cultural
+                        associations around climate progress. Countries are sorted from top to bottom by their 2023
+                        percent
+                        change, so the biggest improvers appear at the top and the biggest backsliders at the bottom —
+                        making the overall story immediately readable without requiring the viewer to search.
+                    </p>
+                    <p>
+                        The secondary view is a line chart that appears when a country is clicked, showing that
+                        country's
+                        raw emissions trajectory over time alongside a dashed OECD Europe average reference line. This
+                        provides important context: the heatmap communicates relative change, while the line chart
+                        communicates absolute magnitude and situates the country within a regional benchmark. A vertical
+                        annotation marks 2020 to flag the COVID-19 pandemic, which caused a temporary emissions dip
+                        across
+                        nearly all countries and could otherwise be misread as sustained progress.
+                    </p>
 
-                <h3>Transparency & Accuracy</h3>
-                <p>
-                    All data transformations are explicitly disclosed in the subtitle and write-up: the percent change
-                    calculation, the 2000 baseline, the exclusion of LULUCF, and the country filter. The data source
-                    is cited directly on the chart. Tooltips on both the heatmap and line chart provide exact values
-                    on demand, allowing viewers to verify the color encoding against precise numbers. The color scale
-                    legend is labeled with its endpoints and midpoint so the encoding is never ambiguous.
-                </p>
+                    <h3>Transparency & Accuracy</h3>
+                    <p>
+                        All data transformations are explicitly disclosed in the subtitle and write-up: the percent
+                        change
+                        calculation, the 2000 baseline, the exclusion of LULUCF, and the country filter. The data source
+                        is cited directly on the chart. Tooltips on both the heatmap and line chart provide exact values
+                        on demand, allowing viewers to verify the color encoding against precise numbers. The color
+                        scale
+                        legend is labeled with its endpoints and midpoint so the encoding is never ambiguous.
+                    </p>
                 </div>
-                
+
             </div>
         </div>
     </div>

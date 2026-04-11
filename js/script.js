@@ -1,7 +1,4 @@
-// set up dimens. and margins
-const margin = { top: 80, right: 40, bottom: 80, left: 120 };
-const width = 900 - margin.left - margin.right;
-const height = 800 - margin.top - margin.bottom;
+
 
 // line chart svg
 const marginLine = { top: 40, right: 80, bottom: 60, left: 80 };
@@ -9,9 +6,14 @@ const lineWidth = 680 - marginLine.left - marginLine.right;
 const lineHeight = 375 - marginLine.top - marginLine.bottom;
 
 // bar chart svg
-const marginBar = { top: 40, right: 40, bottom: 60, left: 80 };
+const marginBar = { top: 60, right: 40, bottom: 40, left: 80 };
 const barWidth = 680 - marginBar.left - marginBar.right;
 const barHeight = 375 - marginBar.top - marginBar.bottom;
+
+// set up dimens. and margins
+const margin = { top: 80, right: 40, bottom: 80, left: 120 };
+const width = 900 - margin.left - margin.right;
+const height = lineHeight + barHeight + 162;
 
 const years = d3.range(2000, 2024); // 2000-2023
 
@@ -429,7 +431,7 @@ function drawBarChart(country) {
         .append('text')
         .attr('class', 'bar-label')
         .attr('x', d => xBar(d.label) + xBar.bandwidth() / 2)
-        .attr('y', d => d.pct < 0 ? yBar(d.pct) + 14 : yBar(d.pct) - 6)
+        .attr('y', d => d.pct < 0 ? yBar(d.pct) + 14 : yBar(d.pct) - 10)
         .attr('text-anchor', 'middle')
         .style('font-size', '11px')
         .style('fill', '#333')
@@ -438,11 +440,20 @@ function drawBarChart(country) {
     // title
     barSvg.append('text')
         .attr('x', barWidth / 2)
-        .attr('y', -20)
+        .attr('y', -25)
         .attr('text-anchor', 'middle')
         .style('font-size', '13px')
         .style('font-weight', 'bold')
         .text(`${country} — Avg. Emissions Change by Decade`);
+
+    // subtitle
+    barSvg.append('text')
+        .attr('x', barWidth / 2)
+        .attr('y', -10)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '10px')
+        .style('fill', '#888')
+        .text('Darker green = more recent period. All values relative to 2000 baseline.');
 
     // y axis label
     barSvg.append('text')
