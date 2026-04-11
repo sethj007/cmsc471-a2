@@ -407,6 +407,7 @@ function init() {
             .attr('height', y.bandwidth())
             .attr('fill', d => color(d.pct))
             .attr('rx', 2)
+            .style('cursor', 'pointer')
             .on('mouseover', function(event, d) {
                 d3.select('#tooltip')
                     .style('display', 'block')
