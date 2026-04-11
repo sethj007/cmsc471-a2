@@ -396,6 +396,7 @@ function init() {
             });
 
         // draw heatmap cells
+        // draw heatmap cells
         svg.selectAll('.cell')
             .data(heatData.filter(d => d.pct !== null))
             .enter()
@@ -409,6 +410,12 @@ function init() {
             .attr('rx', 2)
             .style('cursor', 'pointer')
             .on('mouseover', function(event, d) {
+                // highlight hovered row
+                svg.selectAll('.cell')
+                    .filter(c => c.country === d.country)
+                    .style('stroke', '#333')
+                    .style('stroke-width', '1px');
+
                 d3.select('#tooltip')
                     .style('display', 'block')
                     .style('opacity', 0)
@@ -423,6 +430,11 @@ function init() {
                     .style('opacity', 1);
             })
             .on('mouseout', function() {
+                // remove row highlight
+                svg.selectAll('.cell')
+                    .style('stroke', 'none')
+                    .style('stroke-width', '0');
+
                 d3.select('#tooltip')
                     .transition().duration(20)
                     .style('opacity', 0)
@@ -433,6 +445,7 @@ function init() {
                 svg.selectAll('.cell')
                 .style('opacity', c => c.country === d.country ? 1 : 0.4);
 
+                d3.select('#reset-btn').style('display', 'inline-block');
                 drawLineChart(d.country);
             });
 
