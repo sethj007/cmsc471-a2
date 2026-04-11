@@ -204,6 +204,23 @@ function drawLineChart(country) {
         .attr('stroke-width', 2.5)
         .attr('d', line);
 
+    // COVID annotation
+    lineSvg.append('line')
+        .attr('x1', xLine(2020))
+        .attr('x2', xLine(2020))
+        .attr('y1', 0)
+        .attr('y2', lineHeight)
+        .attr('stroke', '#999')
+        .attr('stroke-width', 1)
+        .attr('stroke-dasharray', '4,3');
+
+    lineSvg.append('text')
+        .attr('x', xLine(2020) + 4)
+        .attr('y', 12)
+        .style('font-size', '9px')
+        .style('fill', '#999')
+        .text('COVID-19');
+
     // hover dot and vertical line
     const focus = lineSvg.append('g')
         .attr('class', 'focus')
@@ -232,7 +249,12 @@ function drawLineChart(country) {
         .attr('fill', 'none')
         .attr('pointer-events', 'all')
         .on('mouseover', () => focus.style('display', null))
-        .on('mouseout', () => focus.style('display', 'none'))
+        .on('mouseout', function() {
+            focus.style('display', 'none');
+            d3.select('#tooltip')
+                .style('opacity', 0)
+                .on('end', function() { d3.select(this).style('display', 'none'); }); 
+        })
         .on('mousemove', function(event) {
             const [mx] = d3.pointer(event);
             const year = Math.round(xLine.invert(mx));
