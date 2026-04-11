@@ -10,7 +10,7 @@ body {
     background: #f7f7f7;
 }
 
-/* container styling for layout */
+/* container */
 .container {
     max-width: 1100px;
     margin: 2rem auto;
@@ -26,28 +26,14 @@ h1 {
     padding: 1.5rem 0 0.5rem 0;
 }
 
-#vis svg {
-    margin: 0;
-    border: none;
+.page-subtitle {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 1rem;
+    line-height: 1.5;
 }
 
-#vis2 {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-    border: 1px solid #e8e8e8;
-    padding: 1rem;
-}
-
-#vis3 {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
-    border: 1px solid #e8e8e8;
-    padding: 1rem;
-    margin-top: 0;
-}
-
+/* axis styles */
 .y-axis .tick line {
     stroke: #ccc;
 }
@@ -71,33 +57,7 @@ h1 {
     font-weight: bold;
 }
 
-button {
-    padding: 8px 16px;
-    margin-right: 10px;
-}
-
-#reset-btn {
-    display: none;
-    padding: 6px 14px;
-    margin-bottom: 0.5rem;
-    background: none;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 12px;
-    color: #666;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-#reset-btn:hover {
-    background: #f5f5f5;
-    border-color: #999;
-    color: #333;
-}
-
 /* tab styles */
-
-/* tab buttons container */
 .tab {
     display: flex;
     justify-content: center;
@@ -106,14 +66,13 @@ button {
     background: #f7f7f7;
 }
 
-/* individual tab buttons */
 .tablinks {
     flex: 1;
     text-align: center;
     background: none;
     border: none;
     border-bottom: 3px solid transparent;
-    margin-bottom: -2px; /* overlaps the container border-bottom */
+    margin-bottom: -2px;
     padding: 10px 24px;
     font-size: 15px;
     cursor: pointer;
@@ -126,18 +85,17 @@ button {
     color: #333;
 }
 
-/* active tab */
 .tablinks.active {
     color: #111;
     font-weight: bold;
     border-bottom: 3px solid #111;
 }
 
-/* tab content panels */
 .tabcontent {
     display: none;
 }
 
+/* tooltip */
 #tooltip {
     position: absolute;
     background: white;
@@ -151,6 +109,7 @@ button {
     transition: opacity 0.2s ease;
 }
 
+/* visualization layout */
 .vis-layout {
     display: flex;
     align-items: flex-start;
@@ -175,9 +134,14 @@ button {
     padding: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     gap: 1rem;
-    background: transparent;
+}
+
+/* svg containers */
+#vis svg {
+    margin: 0;
+    border: none;
+    display: block;
 }
 
 #vis2 svg {
@@ -193,38 +157,61 @@ button {
     display: block;
 }
 
+/* right panel cards */
+#vis2 {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    border: 1px solid #e8e8e8;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#vis3 {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    border: 1px solid #e8e8e8;
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* writeup */
 #writeup {
     width: 100vw;
     margin-left: calc(-50vw + 50%);
-    padding: 2rem 3rem;
-    margin-top: 0;
-    border-top: none;
+    padding: 0 1rem 1.5rem 1rem;
     box-sizing: border-box;
-    color: #333;
-    font-size: 12px;
     background: #f7f7f7;
-    box-shadow: none;
+}
+
+#writeup-inner {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    border: 1px solid #e8e8e8;
+    padding: 2rem 3rem;
+    box-sizing: border-box;
 }
 
 #writeup h2 {
-    font-size: 15px;
+    font-size: 24px;
     font-weight: bold;
     margin-bottom: 0.5rem;
     margin-top: 1rem;
-    color: #222;
 }
 
 #writeup h3 {
-    font-size: 13px;
+    font-size: 18px;
     font-weight: bold;
     margin-top: 1rem;
     margin-bottom: 0.25rem;
-    color: #444;
 }
 
 #writeup p {
-    font-size: 12px;
-    color: #333;
-    line-height: 1.7;
-    margin-bottom: 0.5rem;
+    font-size: 16px;
+    line-height: 1.8;
+    margin-bottom: 0.75rem;
 }
