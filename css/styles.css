@@ -20,6 +20,7 @@
 #vis2 svg {
     margin: 0;
     border: none;
+    overflow: visible;
 }
 
 #vis3 {

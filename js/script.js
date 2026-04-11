@@ -304,33 +304,44 @@ function drawLineChart(country) {
     // reset button (SVG)
     const resetBtn = lineSvg.append('g')
         .attr('class', 'reset-btn')
-        .attr('transform', `translate(${lineWidth + marginLine.right - 10}, ${lineHeight + 40})`)
+        .attr('transform', `translate(-55, -15)`)
         .style('cursor', 'pointer')
         .on('click', resetSelection);
 
     resetBtn.append('rect')
-        .attr('x', -90)
-        .attr('y', -14)
-        .attr('width', 100)
-        .attr('height', 20)
-        .attr('rx', 4)
-        .attr('fill', 'none')
-        .attr('stroke', '#ccc');
+        .attr('x', 0)
+        .attr('y', -16)
+        .attr('width', 110)
+        .attr('height', 24)
+        .attr('rx', 12)
+        .attr('fill', '#f0f0f0')
+        .attr('stroke', '#ccc')
+        .attr('stroke-width', 1);
 
     resetBtn.append('text')
-        .attr('x', -40)
-        .attr('y', 0)
+        .attr('x', 55)
+        .attr('y', 2)
         .attr('text-anchor', 'middle')
         .style('font-size', '11px')
-        .style('fill', '#666')
+        .style('fill', '#555')
+        .style('font-weight', 'bold')
         .text('✕ Clear Selection');
+
+    // hover effect
+    resetBtn.on('mouseover', function () {
+        resetBtn.select('rect').attr('fill', '#e0e0e0').attr('stroke', '#999');
+    })
+        .on('mouseout', function () {
+            resetBtn.select('rect').attr('fill', '#f0f0f0').attr('stroke', '#ccc');
+        })
+        .on('click', resetSelection);
 
     // y axis label
     lineSvg.append('text')
         .attr('class', 'axis-label')
         .attr('transform', 'rotate(-90)')
         .attr('x', -lineHeight / 2)
-        .attr('y', -50)
+        .attr('y', -60)
         .attr('text-anchor', 'middle')
         .style('font-size', '11px')
         .text('kg CO₂e per person');
@@ -474,7 +485,7 @@ function resetSelection() {
         .attr('class', 'axis-label')
         .attr('transform', 'rotate(-90)')
         .attr('x', -lineHeight / 2)
-        .attr('y', -50)
+        .attr('y', -60)
         .attr('text-anchor', 'middle')
         .style('font-size', '11px')
         .text('kg CO₂e per person');
