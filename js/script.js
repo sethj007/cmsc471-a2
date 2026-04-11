@@ -1,10 +1,12 @@
 // set up dimens. and margins
-const margin = { top: 80, right: 60, bottom: 80, left: 100 };
-const width = 800 - margin.left - margin.right;
-const height = 600 - margin.top - margin.bottom;
-const marginLine = { top: 40, right: 60, bottom: 60, left: 100 };
-const lineWidth = 800 - marginLine.left - marginLine.right;
-const lineHeight = 300 - marginLine.top - marginLine.bottom;
+const margin = { top: 80, right: 40, bottom: 80, left: 120 };
+const width = 900 - margin.left - margin.right;
+const height = 750 - margin.top - margin.bottom;
+
+const marginLine = { top: 40, right: 100, bottom: 60, left: 80 };
+const lineWidth = 750 - marginLine.left - marginLine.right;
+const lineHeight = 320 - marginLine.top - marginLine.bottom;
+
 const years = d3.range(2000, 2024); // 2000-2023
 
 // list for easier data manipulation
@@ -275,6 +277,19 @@ function drawLineChart(country) {
         .text('kg CO₂e per person');
 }
 
+function resetSelection() {
+    svg.selectAll('.cell').style('opacity', 1);
+    d3.select('#reset-btn').style('display', 'none');
+    lineSvg.selectAll('*').remove();
+    lineSvg.append('text')
+        .attr('x', lineWidth / 2)
+        .attr('y', lineHeight / 2)
+        .attr('text-anchor', 'middle')
+        .style('fill', '#aaa')
+        .style('font-size', '13px')
+        .text('Click a country to see its emissions trend');
+}
+
 // load csv and transform data
 function init() {
     d3.csv('data/oecd_env_data.csv').then(raw => {
@@ -400,6 +415,7 @@ function init() {
 
         drawLegend(color);
         drawTitles();
+        resetSelection();
 
     }).catch(error => console.error('Error loading data:', error));
 }

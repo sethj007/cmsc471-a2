@@ -18,8 +18,18 @@
 
         <!-- white hat tab content -->
         <div id="whitehat" class="tabcontent" style="display:block">
-            <div id="vis"></div> <!-- heatmap -->
-            <div id="vis2" style="display:none"></div> <!-- line chart -->
+            <div class="vis-layout">
+                <div class="vis-left">
+                    <div id="vis"></div>
+                </div>
+                <div class="vis-right">
+                    <button id="reset-btn" style="display:none" onclick="resetSelection()">✕ Clear Selection</button>
+                    <div id="vis2"></div>
+                    <div id="writeup">
+                        <!-- write-up goes here -->
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- black hat tab content -->
